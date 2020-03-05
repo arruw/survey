@@ -16,7 +16,7 @@ const Home = (props: RouteComponentProps) => {
     <Container>
       <Row>
         <Col>
-          <h1>Self assessment questioners !</h1>
+          <h1>Self assessment questioners</h1>
         </Col>
       </Row>
       <Row>

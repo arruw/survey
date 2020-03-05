@@ -6,12 +6,14 @@ import useLocalStorage from '@rehooks/local-storage';
 
 const App = () => {
   return (
-    <Router>
-      <Home path="/" />
-      <PSQI path="/assessment/psqi" />
-      <DASS path="/assessment/dass" />
-      <LEAFQ path="/assessment/leafq" />
-    </Router>
+    <div>
+      <Router>
+        <Home path="/" />
+        <PSQI path="/assessment/psqi" />
+        <DASS path="/assessment/dass" />
+        <LEAFQ path="/assessment/leafq" />
+      </Router>
+    </div>
   );
 };
 
