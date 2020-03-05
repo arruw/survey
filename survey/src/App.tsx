@@ -1,16 +1,18 @@
 import React from 'react';
-import ThemeContext from './components/Theme';
+import Home from './components/Home';
+import { Router } from '@reach/router';
+import { PSQI, DASS, LEAFQ } from './components/Assessment';
+import useLocalStorage from '@rehooks/local-storage';
 
-import Questioneer from  './components/Questioneer/questioneer'
-
-class App extends React.Component {
-
-  render() {
-    return (
-      <Questioneer />
-    );
-  }
-
-}
+const App = () => {
+  return (
+    <Router>
+      <Home path="/" />
+      <PSQI path="/assessment/psqi" />
+      <DASS path="/assessment/dass" />
+      <LEAFQ path="/assessment/leafq" />
+    </Router>
+  );
+};
 
 export default App;

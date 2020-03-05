@@ -1,6 +1,18 @@
 const questions = {
   pages: [
    {
+    name: "page0",
+    elements: [
+     {
+      type: "html",
+      name: "question1",
+      titleLocation: "hidden"
+     }
+    ],
+    title: "Pittsburgh Sleep Quality Index (PSQI)",
+    description: "The following questions relate to your usual sleep habits during the past month only. Your answers should indicate the most accurate reply for the majority of days and nights in the past month. Please answer all questions."
+   },
+   {
     name: "page1",
     elements: [
      {
@@ -322,6 +334,6 @@ const questions = {
     ]
    }
   ]
-};
+ };
 
 export default questions;
