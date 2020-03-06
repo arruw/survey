@@ -1,0 +1,28 @@
+div.br-wrapper.br-theme-bars-movie > .br-widget {
+
+  > a {
+    height: auto;
+    width: 40px;
+    color: gray;
+    margin: 1px 0;
+  }
+
+  > a.br-selected, > a.br-active {
+    background-color: #bbcefb;
+  }
+
+  > a.br-selected.br-current, > a.br-active:hover {
+    background-color: #4278F5;
+    color: black;
+  }
+
+  > a:after {
+    display: inline-block;
+    content: attr(data-rating-text);
+    width: 100%;
+    padding: 2px;
+    text-align: center;
+    font-size: smaller;
+  }
+
+}

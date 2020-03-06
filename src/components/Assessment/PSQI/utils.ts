@@ -1,3 +1,4 @@
+
 interface IPSQIResponse {
   q1: number
   q2: number
@@ -22,6 +23,17 @@ interface IPSQIResponse {
   q8: number
   q9: number
 };
+
+interface IPSQIScore {
+    c1: number
+    c2: number
+    c3: number
+    c4: number
+    c5: number
+    c6: number
+    c7: number
+    total: number
+}
 
 const defaultResponse: IPSQIResponse = {
   q1: 0,
@@ -48,7 +60,7 @@ const defaultResponse: IPSQIResponse = {
   q9: 0,
 };
 
-const calculateScore = (response: IPSQIResponse) => {
+export const calculateScore = (response: IPSQIResponse): IPSQIScore => {
   response.q5 = {...defaultResponse.q5, ...response.q5}
   response = {...defaultResponse, ...response};
 
@@ -86,8 +98,20 @@ const calculateScore = (response: IPSQIResponse) => {
     c7: c7,
     total: c1 + c2 + c3 + c4 + c5 + c6 + c7,
   };
-}
+};
 
-export {
-  calculateScore
+export const castSurveyData = (obj: any): any => {
+  let newObj: any = {};
+  for (const key in obj) {
+    let value = obj[key];
+    
+    if (value instanceof Object) {
+      value = castSurveyData(value);
+    } else if (value != null && !isNaN(value)) {
+      value = +value;
+    }
+
+    newObj[key] = value;
+  }
+  return newObj;
 };

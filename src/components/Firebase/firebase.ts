@@ -21,4 +21,5 @@ export default class Firebase {
   }
 
   saveResponse = (response: any) => this.firestore.collection('survey').add(response)
+
 }
