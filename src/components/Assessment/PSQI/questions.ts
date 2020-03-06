@@ -89,6 +89,7 @@ const questions = {
           name: "q5",
           title: "During the past month, how often have you had trouble sleeping because you...",
           isRequired: true,
+          isAllRowRequired: true,
           columns: [
             {
               value: "0",

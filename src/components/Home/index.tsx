@@ -63,10 +63,8 @@ const QuestionerCard = (props: QuestionerCardProps) => {
       <CardBody style={{height: '100%', display: 'flex', flexFlow: 'column nowrap'}}>
         <CardTitle>{props.title}</CardTitle>
         <CardText style={{flexGrow: 2}}>{props.text}</CardText>
-        {props.lastScore ?
-          <Gauge lastScore={props.lastScore} maxScore={props.maxScore} color={'info'}/> :
-          <Link to={props.linkTo} className="btn btn-primary">Get assessment</Link>
-        }
+        <Gauge lastScore={props.lastScore} maxScore={props.maxScore} color={'info'}/>
+        <Link to={props.linkTo} className="btn btn-primary">Get assessment</Link>
       </CardBody>
     </Card>
   );

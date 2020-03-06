@@ -1,0 +1,36 @@
+.gauge {
+  padding: 5px;
+
+  .scale-annotations {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .annotation {
+      font-size: 8px;
+    }
+  }
+
+  .scale {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    text-align: center;
+
+    .progress {
+      flex-grow: 1;
+    }
+
+    .progress .progress-bar:after{
+      content: attr(aria-valuenow);
+      display: inline-block;
+      align-self: flex-end;
+      padding: 0 3px;
+    }
+
+    .value {
+      font-size: 11px;
+      padding: 0 3px;
+    } 
+  }
+}

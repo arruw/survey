@@ -1,35 +1,6 @@
 import React from 'react';
 import { Progress, Badge } from 'reactstrap';
-
-
-// type GaugeProps = {
-//   lastScore: number | null
-//   cmap: {
-//     to: number
-//     color: string
-//   }[]
-// };
-
-// const Gauge = (props: GaugeProps) => {
-//   let bars = [];
-//   let total = props.cmap.reduce((agg, x) => agg + x.to, 0);
-
-//   let prev = 0;
-//   for (const bar of props.cmap) {
-//     if (!props.lastScore || bar.to < props.lastScore) continue;
-//     bars.push(<Progress bar color={bar.color} value={bar.to-prev} max={bar.to-prev} />)
-//     prev = bar.to;
-//   }
-
-//   return (
-//     <div style={{padding: '5px'}}>
-//       <div className="text-center">
-//         <Badge  color="secondary">{props.lastScore ?? '/'}</Badge>
-//       </div>
-//       <Progress multi max={total}>{bars}</Progress>
-//     </div>
-//   );
-// }
+import './gauge.scss';
 
 type GaugeProps = {
   lastScore: number | null
@@ -39,13 +10,23 @@ type GaugeProps = {
 
 const Gauge = (props: GaugeProps) => {
   return (
-    <div style={{padding: '5px'}}>
+    <div className="gauge">
       <div className="text-center">
-        <h6>Your score: <br />
-          <Badge  color="secondary">{props.lastScore ?? '/'}</Badge>
-        </h6>
+        <h6>YOUR SCORE</h6>
       </div>
-      <Progress max={props.maxScore} value={props.lastScore ?? 0} color={props.color} />
+      <div className="scale-annotations">
+        <div className="annotation">
+          BEST
+        </div>
+        <div className="annotation">
+          WORST
+        </div>
+      </div>
+      <div className="scale">
+        <div className="value">0</div>
+        <Progress max={props.maxScore} value={props.lastScore ?? 0} color={props.color} />
+        <div className="value">{props.maxScore}</div>
+      </div>
     </div>
   );
 }
