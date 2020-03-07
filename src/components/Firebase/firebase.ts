@@ -1,5 +1,7 @@
 import app from 'firebase/app';
 import 'firebase/firestore';
+import 'firebase/functions';
+import 'firebase/auth';
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -14,12 +16,22 @@ const config = {
 
 export default class Firebase {
   private firestore: app.firestore.Firestore;
-  
+  private functions: app.functions.Functions;
+  private auth: app.auth.Auth;
+  private functionsBaseUrl: string = `https://us-central1-${config.projectId}.cloudfunctions.net`;
+
   constructor() {
     app.initializeApp(config);
     this.firestore = app.firestore()
+    this.functions = app.functions();
+    this.auth = app.auth();
   }
 
-  saveResponse = (response: any) => this.firestore.collection('survey').add(response)
-
+  saveSurveyResponse = async (survey: string, response: any) => {
+    const identity = await this.auth.signInAnonymously();
+    this.firestore.collection(`/surveys/${survey}/responses`).doc(identity.user?.uid).set({
+      ...response,
+      timestamp: app.firestore.FieldValue.serverTimestamp(),
+    });
+  };
 }

@@ -18,6 +18,7 @@ import './br-widget-overrides.scss'
 
 //@ts-ignore
 import * as widgets from "surveyjs-widgets";
+import { firestore } from 'firebase';
 
 //@ts-ignore
 window["$"] = window["jQuery"] = $;
@@ -28,30 +29,25 @@ const PSQI = (props: RouteComponentProps) => {
   const firebase = useContext(FirebaseContext);
   const [scores, setScores] = useLocalStorage<any>('scores', { psqi: null, dass: null, leafq: null });
 
-  useEffect(() => {
-    if (scores.psqi) navigate('/');
-  });
+  // useEffect(() => {
+  //   if (scores.psqi) navigate('/');
+  // });
 
   const onComplete = (survey: Survey.SurveyModel) => {
     // survey.sendResult('22847fab-5387-43d8-98b7-0983d1bbee1b');
     
     let response = castSurveyData(survey.data);
-    response.timestamp = new Date();
     response.scoring = calculateScore(survey.data);
   
     console.log(response);
   
-    firebase.saveResponse(response)
-      .then((docRef: any) => {
-        console.log('Saved response with id: ' + docRef);
-      })
-      .catch((error: Error) => {
-        console.log(error);
-      })
+    firebase.saveSurveyResponse('psqi', response)
+      .then(() => console.log('Saved.'))
+      .catch((error: Error) => console.log(error))
       .finally(() => {
         setScores({...scores, psqi: response?.scoring?.total ?? 0});
+        navigate('/');
       });
- 
   };
 
   Survey.StylesManager.applyTheme("bootstrap");

@@ -1,11 +1,11 @@
 
 interface IPSQIResponse {
-  q1: number
-  q2: number
-  q3: number
-  q4: number
+  q01: number
+  q02: number
+  q03: number
+  q04: number
 
-  q5: {
+  q05: {
     a: number
     b: number
     c: number
@@ -18,10 +18,10 @@ interface IPSQIResponse {
     j: number
   }
 
-  q6: number
-  q7: number
-  q8: number
-  q9: number
+  q06: number
+  q07: number
+  q08: number
+  q09: number
 };
 
 interface IPSQIScore {
@@ -36,12 +36,12 @@ interface IPSQIScore {
 }
 
 const defaultResponse: IPSQIResponse = {
-  q1: 0,
-  q2: 0,
-  q3: 0,
-  q4: 0,
+  q01: 0,
+  q02: 0,
+  q03: 0,
+  q04: 0,
 
-  q5: {
+  q05: {
     a: 0,
     b: 0,
     c: 0,
@@ -54,38 +54,38 @@ const defaultResponse: IPSQIResponse = {
     j: 0,
   },
 
-  q6: 0,
-  q7: 0,
-  q8: 0,
-  q9: 0,
+  q06: 0,
+  q07: 0,
+  q08: 0,
+  q09: 0,
 };
 
 export const calculateScore = (response: IPSQIResponse): IPSQIScore => {
-  response.q5 = {...defaultResponse.q5, ...response.q5}
+  response.q05 = {...defaultResponse.q05, ...response.q05}
   response = {...defaultResponse, ...response};
 
-  var c1 = +response.q9;
+  var c1 = +response.q09;
   var c2 = Math.ceil((
-      (+response.q2) +
-      (+response.q5.a)
+      (+response.q02) +
+      (+response.q05.a)
     ) / 2);
-  var c3 = +response.q4;
+  var c3 = +response.q04;
   var c4 = 0;
   var c5 = Math.ceil((
-      (+response.q5.b) +
-      (+response.q5.c) +
-      (+response.q5.d) +
-      (+response.q5.e) +
-      (+response.q5.f) +
-      (+response.q5.g) +
-      (+response.q5.h) +
-      (+response.q5.i) +
-      (+response.q5.j)
+      (+response.q05.b) +
+      (+response.q05.c) +
+      (+response.q05.d) +
+      (+response.q05.e) +
+      (+response.q05.f) +
+      (+response.q05.g) +
+      (+response.q05.h) +
+      (+response.q05.i) +
+      (+response.q05.j)
     ) / 9);
-  var c6 = +response.q6;
+  var c6 = +response.q06;
   var c7 = Math.ceil((
-      (+response.q7) +
-      (+response.q8)
+      (+response.q07) +
+      (+response.q08)
     ) / 2);
 
   return {

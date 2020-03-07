@@ -20,25 +20,26 @@ const allowedSurveys = ['psqi'];
 ex.get('/export/:id', async (req, res) => {
   console.log('Exporting CSV data ...');
 
-  if(allowedSurveys.indexOf(req.params.id) == -1) {
+  const surveyId = req.params.id;
+
+  if(!surveyId || allowedSurveys.indexOf(surveyId) === -1) {
     res
       .status(400)
       .send('Invalid request parameter :id');
     return;
   } 
 
-  const filePath = await saveFileToTmp(`export/${req.params.id}.csv`, 
-    await extractCsvFromCollection(`/survey`));
+  const filePath = await saveFileToTmp(`export/${surveyId}.csv`, 
+    await extractCsvFromCollection(`/surveys/${surveyId}/responses`));
 
-  
   res
-    .set('Cache-Control', 'public, max-age=3600, s-maxage=3600')
-    .download(filePath, `${req.params.id}.csv`, {
+    // .set('Cache-Control', 'public, max-age=3600, s-maxage=3600')
+    .download(filePath, `${surveyId}-${admin.firestore.Timestamp.now().toMillis()}.csv`, {
       maxAge: 3600
     });
 });
 
-export const api = functions.https.onRequest(ex);
+export const api2 = functions.https.onRequest(ex);
 
 
 // export const csvExporter = functions.pubsub.schedule('*/5 * * * *').timeZone('Europe/Ljubljana').onRun(async (context) => {
@@ -87,7 +88,7 @@ const extractCsvFromCollection = async (collection: string, timestampField: stri
 
     for (const field in row) {
       if (row.hasOwnProperty(field)) {
-        if (field == timestampField || fields.indexOf(field) != -1) continue;
+        if (field === timestampField || fields.indexOf(field) !== -1) continue;
         fields.push(field);
       }
     }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Router, RouteComponentProps, Link, redirectTo } from "@reach/router"
 
 import { Container, Row, Col, Progress } from 'reactstrap';
@@ -8,9 +8,12 @@ import {
 } from 'reactstrap';
 import { useLocalStorage } from '@rehooks/local-storage';
 import Gauge from '../Widgets/gauge'
+import { FirebaseContext } from '../Firebase';
 
 const Home = (props: RouteComponentProps) => {
+  const firebase = useContext(FirebaseContext);
   const [scores] = useLocalStorage<any>('scores', { psqi: null, dass: null, leafq: null });
+  const [count, setCount] = useLocalStorage<number>('i', 0);
 
   return (
     <Container>

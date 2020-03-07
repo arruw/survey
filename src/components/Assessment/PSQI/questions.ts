@@ -17,7 +17,7 @@ const questions = {
       elements: [
         {
           type: "barrating",
-          name: "q1",
+          name: "q01",
           ratingTheme: "bars-movie",
           title: "During the past month, what time have you usually gone to bed at night?",
           isRequired: true,
@@ -25,7 +25,7 @@ const questions = {
         },
         {
           type: "radiogroup",
-          name: "q2",
+          name: "q02",
           title: "During the past month, how long (in minutes) has it usually taken you to fall asleep each night?",
           isRequired: true,
           choices: [
@@ -49,7 +49,7 @@ const questions = {
         },
         {
           type: "barrating",
-          name: "q3",
+          name: "q03",
           ratingTheme: "bars-movie",
           title: "During the past month, what time have you usually gotten up in the morning?",
           isRequired: true,
@@ -57,7 +57,7 @@ const questions = {
         },
         {
           type: "radiogroup",
-          name: "q4",
+          name: "q04",
           title: "During the past month, how many hours of actual sleep did you get at night? (This may be different than the number of hours you spent in bed.)",
           isRequired: true,
           choices: [
@@ -86,7 +86,7 @@ const questions = {
       elements: [
         {
           type: "matrix",
-          name: "q5",
+          name: "q05",
           title: "During the past month, how often have you had trouble sleeping because you...",
           isRequired: true,
           isAllRowRequired: true,
@@ -149,7 +149,7 @@ const questions = {
         },
         {
           type: "radiogroup",
-          name: "q6",
+          name: "q06",
           title: "During the past month, how often have you\ntaken medicine to help you sleep (prescribed or\n“over the counter”)?",
           isRequired: true,
           choices: [
@@ -174,7 +174,7 @@ const questions = {
         },
         {
           type: "radiogroup",
-          name: "q7",
+          name: "q07",
           title: "During the past month, how often have you had\ntrouble staying awake while driving, eating meals,\nor engaging in social activity?",
           isRequired: true,
           choices: [
@@ -204,7 +204,7 @@ const questions = {
       elements: [
         {
           type: "radiogroup",
-          name: "q8",
+          name: "q08",
           title: "During the past month, how much of a problem\nhas it been for you to keep up enough enthusiasm\nto get things done?",
           isRequired: true,
           choices: [
@@ -229,7 +229,7 @@ const questions = {
         },
         {
           type: "radiogroup",
-          name: "q9",
+          name: "q09",
           title: "During the past month, how would you rate\nyour sleep quality overall?",
           isRequired: true,
           choices: [
@@ -279,7 +279,7 @@ const questions = {
         },
         {
           type: "matrix",
-          name: "q10_1",
+          name: "q11",
           visibleIf: "{q10} anyof [2, 3]",
           title: "Ask your partner/room mate how often in the past month you have\nhad...",
           isRequired: true,
