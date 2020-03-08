@@ -1,6 +1,5 @@
 import app from 'firebase/app';
 import 'firebase/firestore';
-import 'firebase/functions';
 import 'firebase/auth';
 
 const config = {
@@ -16,20 +15,17 @@ const config = {
 
 export default class Firebase {
   private firestore: app.firestore.Firestore;
-  private functions: app.functions.Functions;
   private auth: app.auth.Auth;
-  private functionsBaseUrl: string = `https://us-central1-${config.projectId}.cloudfunctions.net`;
 
   constructor() {
     app.initializeApp(config);
     this.firestore = app.firestore()
-    this.functions = app.functions();
     this.auth = app.auth();
   }
 
   saveSurveyResponse = async (survey: string, response: any) => {
-    const identity = await this.auth.signInAnonymously();
-    this.firestore.collection(`/surveys/${survey}/responses`).doc(identity.user?.uid).set({
+    if (!this.auth.currentUser) await this.auth.signInAnonymously();
+    this.firestore.collection(`/surveys/${survey}/responses`).doc(this.auth.currentUser?.uid).set({
       ...response,
       timestamp: app.firestore.FieldValue.serverTimestamp(),
     });
