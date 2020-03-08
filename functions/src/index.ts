@@ -12,7 +12,7 @@ const db = admin.firestore();
 const bucket = 'development-269916-shared';
 const schedule = functions.pubsub.schedule('*/5 * * * *').timeZone('Europe/Ljubljana');
 
-export const psqiExporter = schedule.onRun(async (context) => {
+export const psqiCsvExporter = schedule.onRun(async (context) => {
   await exportSurveyData('psqi', [
     'timestamp._seconds',
     'scoring.c1',
@@ -28,7 +28,7 @@ export const psqiExporter = schedule.onRun(async (context) => {
   return null;
 });
 
-// export const dassExporter = schedule.onRun(async (context) => {
+// export const dassCsvExporter = schedule.onRun(async (context) => {
 //   await exportSurveyData('psqi', [
 //     'timestamp._seconds',
 //     'scoring.c1',
@@ -44,7 +44,7 @@ export const psqiExporter = schedule.onRun(async (context) => {
 //   return null;
 // });
 
-// export const leafqExporter = schedule.onRun(async (context) => {
+// export const leafqCsvExporter = schedule.onRun(async (context) => {
 //   await exportSurveyData('psqi', [
 //     'timestamp._seconds',
 //     'scoring.c1',
@@ -97,35 +97,48 @@ const exportSurveyData = async (surveyId: string, fields: string[]) => {
   }
   console.log('New data to process: ' + newData.length);
 
+  const sharableFilePathRemote = `surveys/${surveyId}.csv`;
   const newFilePathRemote = `surveys/${surveyId}-${now.seconds}.csv`;
+  const newFilePathRemoteChunk = `surveys/${surveyId}-${now.seconds}-chunk.csv`;
   const newFilePathLocal = path.join(os.tmpdir(), newFilePathRemote);
   
   // Ensure that local path exists
   console.log('Ensuring local folder structure...');
   await fs.mkdirp(path.dirname(newFilePathLocal));
 
-  // Download previous data
-  if(!initialRun) {
-    console.log('Downloading old data...');
-    const prevFilePathRemote = `surveys/${surveyId}-${metadata?.lastRun.seconds}.csv`;
-    await admin.storage().bucket(bucket).file(prevFilePathRemote).download({
-      destination: newFilePathLocal
-    });
-  }
-
   // Append to previous data
   console.log('Appending new data...');
-  await fs.appendFile(newFilePathLocal, (await json2csv.parseAsync(newData, {
+  await fs.writeFile(newFilePathLocal, (await json2csv.parseAsync(newData, {
     fields: fields,
     header: initialRun,
   }))+'\n');
 
-  // Store CSV and metadata
-  console.log('Uploading CSV...');
+  // Append new CSV data
+  console.log('Uploading new CSV chunk...');
   await admin.storage().bucket(bucket).upload(newFilePathLocal, {
-    destination: newFilePathRemote
+    destination: newFilePathRemoteChunk,
+    gzip: true
   });
-  console.log('Updating metadata...'); 
+  console.log('Appending CSV data...');
+  const combineFiles: string[] = [];
+  if (!initialRun) {
+    const prevFilePathRemote = `surveys/${surveyId}-${metadata?.lastRun.seconds}.csv`;
+    combineFiles.push(prevFilePathRemote);
+  } 
+  await admin.storage().bucket(bucket).combine([ ...combineFiles, newFilePathRemoteChunk ], newFilePathRemote);
+  console.log('Cleanup...');
+  combineFiles.forEach(async file => await admin.storage().bucket(bucket).file(file).delete());
+  await admin.storage().bucket(bucket).file(newFilePathRemoteChunk).delete();
+  
+  // Create sharable CSV file
+  console.log('Creating sharable CSV file...');
+  if (!initialRun) {
+    await admin.storage().bucket(bucket).file(sharableFilePathRemote).delete();
+  } 
+  await admin.storage().bucket(bucket).combine([ newFilePathRemote ], sharableFilePathRemote);
+
+  // Update metadata
+  console.log('Updating metadata...');
   await metadataRef.set({
     lastRun: now,
     rows: (metadata?.rows ?? 0) + newData.length

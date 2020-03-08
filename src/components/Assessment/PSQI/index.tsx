@@ -26,9 +26,9 @@ const PSQI = (props: RouteComponentProps) => {
   const firebase = useContext(FirebaseContext);
   const [scores, setScores] = useLocalStorage<any>('scores', { psqi: null, dass: null, leafq: null });
 
-  // useEffect(() => {
-  //   if (scores.psqi) navigate('/');
-  // });
+  useEffect(() => {
+    if (scores.psqi && process.env.NODE_ENV === 'production') navigate('/');
+  });
 
   const onComplete = (survey: Survey.SurveyModel) => {
     // survey.sendResult('22847fab-5387-43d8-98b7-0983d1bbee1b');

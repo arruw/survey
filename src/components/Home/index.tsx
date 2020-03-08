@@ -62,7 +62,8 @@ const QuestionerCard = (props: QuestionerCardProps) => {
         <CardTitle>{props.title}</CardTitle>
         <CardText style={{flexGrow: 2}}>{props.text}</CardText>
         <Gauge lastScore={props.lastScore} maxScore={props.maxScore} color={'info'}/>
-        <Link to={props.linkTo} className="btn btn-primary">Get assessment</Link>
+        { (!props.lastScore || process.env.NODE_ENV === 'development') && 
+          <Link to={props.linkTo} className="btn btn-primary">Get assessment</Link> }
       </CardBody>
     </Card>
   );
