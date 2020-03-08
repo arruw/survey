@@ -1,8 +1,8 @@
 
-interface IPSQIResponse {
-  q01: number
+export interface IPSQIResponse {
+  q01: string
   q02: number
-  q03: number
+  q03: string
   q04: number
 
   q05: {
@@ -24,7 +24,7 @@ interface IPSQIResponse {
   q09: number
 };
 
-interface IPSQIScore {
+export interface IPSQIScore {
     c1: number
     c2: number
     c3: number
@@ -36,9 +36,9 @@ interface IPSQIScore {
 }
 
 const defaultResponse: IPSQIResponse = {
-  q01: 0,
+  q01: '22:00',
   q02: 0,
-  q03: 0,
+  q03: '6:00',
   q04: 0,
 
   q05: {
@@ -70,7 +70,7 @@ export const calculateScore = (response: IPSQIResponse): IPSQIScore => {
       (+response.q05.a)
     ) / 2);
   var c3 = +response.q04;
-  var c4 = 0;
+  var c4 = c4scorer((7-(+response.q04)) / hoursInBed(response.q01, response.q03));
   var c5 = Math.ceil((
       (+response.q05.b) +
       (+response.q05.c) +
@@ -100,18 +100,29 @@ export const calculateScore = (response: IPSQIResponse): IPSQIScore => {
   };
 };
 
-export const castSurveyData = (obj: any): any => {
-  let newObj: any = {};
-  for (const key in obj) {
-    let value = obj[key];
-    
-    if (value instanceof Object) {
-      value = castSurveyData(value);
-    } else if (value != null && !isNaN(value)) {
-      value = +value;
-    }
+export const hoursInBed = (q01: string, q03: string): number => {
+  const bedIn = q01.split(':').map(x => +x);
+  const bedOut = q03.split(':').map(x => +x);
 
-    newObj[key] = value;
+  let totlaHours = 0;
+  let hour = bedIn[0];
+  while(hour % 24 !== bedOut[0]) {
+    hour++;
+    totlaHours++;
   }
-  return newObj;
-};
+  if (bedIn[0] === bedOut[0]) {
+    totlaHours = 24;
+  }
+
+  if (bedIn[1]  === 30) totlaHours -= 0.5;
+  if (bedOut[1] === 30) totlaHours += 0.5;
+
+  return totlaHours;
+}
+
+export const c4scorer = (value: number) => {
+  if (0.85 <= value)                  return 0;
+  if (0.75 <= value && value < 0.85)  return 1;
+  if (0.65 <= value && value < 0.75)  return 2;
+  return 3;
+}

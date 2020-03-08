@@ -4,13 +4,11 @@ import * as Survey from 'survey-react';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { RouteComponentProps, navigate } from "@reach/router"
 import { FirebaseContext } from '../../Firebase'
-import { calculateScore, castSurveyData } from './utils';
-// import 'jquery-bar-rating/dist/themes/bars-movie.css'
-// import * from 'jquery-bar-rating';
+import { calculateScore } from './scoring';
+import { castSurveyData } from '../utils';
 
 import "survey-react/survey.css";
 import "jquery-bar-rating/dist/themes/bars-movie.css";
-// import "jquery-bar-rating/dist/themes/bars-1to10.css";
 
 import $ from "jquery";
 import "jquery-bar-rating";
@@ -18,7 +16,6 @@ import './br-widget-overrides.scss'
 
 //@ts-ignore
 import * as widgets from "surveyjs-widgets";
-import { firestore } from 'firebase';
 
 //@ts-ignore
 window["$"] = window["jQuery"] = $;
