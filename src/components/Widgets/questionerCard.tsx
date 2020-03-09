@@ -1,34 +1,41 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Card, CardBody, CardTitle, CardText } from 'reactstrap';
 import { Link } from '@reach/router';
 import { Gauge } from '.';
 import './questionerCard.scss';
+import { FirebaseContext } from '../Firebase';
+import metadataCollection, { SurveyId } from '../Assessment/metadata';
+import useLocalStorage from '@rehooks/local-storage';
 
 const QuestionerCard = (props: QuestionerCardProps) => {
+  const [scores] = useLocalStorage<any>('scores', { psqi: null, dass: null, leafq: null });
+  const firebase = useContext(FirebaseContext);
+  const metadata = metadataCollection[props.surveyId];
+  const lastScore = scores[metadata.id];
+
   return (
     <Card style={{height: '100%'}}>
       <CardBody style={{height: '100%', display: 'flex', flexFlow: 'column nowrap'}}>
         <CardTitle>
-          <div>{props.title}</div>
-          <div><Link to={props.aboutLink}>?</Link></div>
+          <div>{metadata.title}</div>
+          <div><Link to={`/about/${metadata.id}`}>?</Link></div>
         </CardTitle>
-        <CardText style={{flexGrow: 2}}>{props.text}</CardText>
-        { props.lastScore && 
-           <Gauge lastScore={props.lastScore} maxScore={props.maxScore} color={'info'}/> }
-        { (!props.lastScore || process.env.NODE_ENV === 'development') && 
-          <Link to={props.assessmentLink} className="btn btn-primary">Get assessment</Link> }
+        <CardText style={{flexGrow: 2}}>{metadata.description}</CardText>
+        { lastScore && 
+           <Gauge lastScore={lastScore} maxScore={metadata.maxScore} color={'info'}/> }
+        { (!lastScore || process.env.NODE_ENV === 'development') && 
+          <Link to={`/assessment/${metadata.id}`} className="btn btn-primary" onClick={() => {
+            // firebase.logEvent('started_assessment', {
+            //   surveyId: props.surveyId
+            // });
+          }}>Get assessment</Link> }
       </CardBody>
     </Card>
   );
 }
 
-type QuestionerCardProps = {
-  title: string
-  text: string
-  assessmentLink: string
-  aboutLink: string
-  lastScore: number | null
-  maxScore: number
+export type QuestionerCardProps = {
+  surveyId: SurveyId
 }
 
 export default QuestionerCard;

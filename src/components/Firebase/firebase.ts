@@ -1,6 +1,7 @@
 import app from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+// import 'firebase/analytics';
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -16,11 +17,13 @@ const config = {
 export default class Firebase {
   private firestore: app.firestore.Firestore;
   private auth: app.auth.Auth;
+  // private analytics: app.analytics.Analytics;
 
   constructor() {
     app.initializeApp(config);
     this.firestore = app.firestore()
     this.auth = app.auth();
+    // this.analytics = app.analytics();
   }
 
   saveSurveyResponse = async (survey: string, response: any) => {
@@ -30,4 +33,6 @@ export default class Firebase {
       timestamp: app.firestore.FieldValue.serverTimestamp(),
     });
   };
+
+  // logEvent = this.analytics.logEvent;
 }

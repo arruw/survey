@@ -3,10 +3,10 @@ import { RouteComponentProps, Router } from "@reach/router"
 import { Container, Row, Col, Alert } from 'reactstrap';
 import { useLocalStorage } from '@rehooks/local-storage';
 import QuestionerCard from '../Widgets/questionerCard';
-import { PSQIAbout, DASSAbout, LEAFQAbout } from '../Assessment';
+import About from '../About';
+import { SurveyId } from '../Assessment/metadata';
 
 const Home = (props: RouteComponentProps) => {
-  const [scores] = useLocalStorage<any>('scores', { psqi: null, dass: null, leafq: null });
   const [showThankYou, setShowThankYou] = useLocalStorage<boolean>('showThankYou', false);
 
   return (
@@ -24,39 +24,19 @@ const Home = (props: RouteComponentProps) => {
       </Row> }
       <Row>
         <Col>
-          <QuestionerCard
-            assessmentLink="/assessment/psqi"
-            aboutLink="/assessment/psqi/about"
-            title="PSQI"
-            text="Pittsburg Sleep Quality Index"
-            maxScore={21}
-            lastScore={scores.psqi} />
+          <QuestionerCard surveyId={SurveyId.PSQI} />
         </Col>
         <Col>
-          <QuestionerCard
-            assessmentLink="/assessment/dass"
-            aboutLink="/assessment/dass/about"
-            title="DASS"
-            text="..."
-            maxScore={21}
-            lastScore={scores.dass} />
+          <QuestionerCard surveyId={SurveyId.DASS} />
         </Col>
         <Col>
-          <QuestionerCard
-            assessmentLink="/assessment/leafq"
-            aboutLink="/assessment/leafq/about"
-            title="LEAF-Q"
-            text="The low energy availability in females questionnaire (LEAF –Q), focuses on physiological symptoms of insufficient energy intake."
-            maxScore={21}
-            lastScore={scores.leafq} />
+          <QuestionerCard surveyId={SurveyId.LEAFQ} />
         </Col>
       </Row>
       <Row>
         <Col>
           <Router>
-            <PSQIAbout path="/assessment/psqi/about" />
-            <DASSAbout path="/assessment/dass/about" />
-            <LEAFQAbout path="/assessment/leafq/about" />
+            <About path="/about/:surveyId" />
           </Router>
         </Col>
       </Row>

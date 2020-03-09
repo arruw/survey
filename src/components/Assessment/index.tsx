@@ -1,18 +1,17 @@
 import React, { useContext, useEffect } from 'react';
-import questions from './questions';
+import metadataCollection, { SurveyId } from './metadata';
 import * as Survey from 'survey-react';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { RouteComponentProps, navigate } from "@reach/router"
-import { FirebaseContext } from '../../Firebase'
-import { calculateScore } from './scoring';
-import { castSurveyData } from '../utils';
+import { FirebaseContext } from '../Firebase'
+import { castSurveyData } from './utils';
 
 import "survey-react/survey.css";
 import "jquery-bar-rating/dist/themes/bars-movie.css";
 
 import $ from "jquery";
 import "jquery-bar-rating";
-import './br-widget-overrides.scss'
+import './assessment.scss'
 
 //@ts-ignore
 import * as widgets from "surveyjs-widgets";
@@ -22,37 +21,52 @@ window["$"] = window["jQuery"] = $;
 
 widgets.jquerybarrating(Survey, $);
 
-const PSQI = (props: RouteComponentProps) => {
+interface IAssessmetProps {
+  surveyId: SurveyId
+};
+
+const Assessment = (props: RouteComponentProps<IAssessmetProps>) => {
+  if (!props.surveyId) throw new Error('SurveyId not set.');
+
   const firebase = useContext(FirebaseContext);
   const [scores, setScores] = useLocalStorage<any>('scores', { psqi: null, dass: null, leafq: null });
   const [_, setShowThankYou] = useLocalStorage<boolean>('showThankYou', false);
 
+  const metadata = metadataCollection[props.surveyId];
+
+  console.log(props);
+
   useEffect(() => {
-    if (scores.psqi && process.env.NODE_ENV === 'production') navigate('/assessment/psqi/about');
+    if (scores[metadata.id] && process.env.NODE_ENV === 'production') navigate(`/about/${metadata.id}`);
   });
 
   const onComplete = (survey: Survey.SurveyModel) => {
-    let response = castSurveyData(survey.data);
-    response.scoring = calculateScore(survey.data);
+    const response = {
+      ...castSurveyData(survey.data),
+      scoring: metadata.scorer<any, any>(survey.data)
+    };
   
     console.log(response);
   
-    firebase.saveSurveyResponse('psqi', response)
-      .then(() => console.log('Saved.'))
+    firebase.saveSurveyResponse(metadata.id, response)
+      .then(() => console.log(`Saved assessment ${metadata.id}.`))
       .catch((error: Error) => console.log(error))
       .finally(() => {
         setScores({...scores, psqi: response?.scoring?.total ?? 0});
         setShowThankYou(true);
-        navigate('/assessment/psqi/about');
+        // firebase.logEvent('completed_assessment', {
+        //   surveyId: props.surveyId
+        // });
+        navigate(`/about/${metadata.id}`);
       });
   };
 
   return (
     <Survey.Survey
-      json={questions}
+      json={metadata.questions}
       onComplete={onComplete}
       showCompletedPage={false} />
   );
-}
+};
 
-export default PSQI;
+export default Assessment;

@@ -1,8 +1,8 @@
 import React from 'react';
 import Home from './components/Home';
 import { Router, Redirect, RouteComponentProps } from '@reach/router';
-import { PSQI, DASS, LEAFQ } from './components/Assessment';
 import Download from './components/Download';
+import Assessment from './components/Assessment';
 
 const App = () => {
   return (
@@ -10,9 +10,7 @@ const App = () => {
       <Router>
         <NotFound default />
         <Home path="/*" />
-        <PSQI path="/assessment/psqi" />
-        <DASS path="/assessment/dass" />
-        <LEAFQ path="/assessment/leafq" />
+        <Assessment path="/assessment/:surveyId" />
         <Download path="/download" />
       </Router>
     </div>

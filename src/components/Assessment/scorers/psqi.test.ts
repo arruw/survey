@@ -1,27 +1,26 @@
-
-import { IPSQIResponse, IPSQIScore, calculateScore, hoursInBed, c4scorer } from './scoring';
+import psqi, { IPSQIResponse, IPSQIScore } from './psqi';
 
 it ('scoring best', () => {
-  expect(calculateScore(responseBest)).toEqual(scoringBest);
+  expect(psqi.calculateScore(responseBest)).toEqual(scoringBest);
 });
 
 it ('scoring worst', () => {
-  expect(calculateScore(responseWorst)).toEqual(scoringWorst);
+  expect(psqi.calculateScore(responseWorst)).toEqual(scoringWorst);
 });
 
 it ('hoursInBed', () => {
-  expect(hoursInBed('22:00', '06:00')).toEqual(8);
-  expect(hoursInBed('22:30', '06:30')).toEqual(8);
-  expect(hoursInBed('22:30', '06:00')).toEqual(7.5);
-  expect(hoursInBed('22:00', '06:30')).toEqual(8.5);
-  expect(hoursInBed('02:00', '05:00')).toEqual(3);
-  expect(hoursInBed('02:00', '02:00')).toEqual(24);
-  expect(hoursInBed('00:00', '02:00')).toEqual(2);
-  expect(hoursInBed('23:30', '02:00')).toEqual(2.5);
+  expect(psqi.hoursInBed('22:00', '06:00')).toEqual(8);
+  expect(psqi.hoursInBed('22:30', '06:30')).toEqual(8);
+  expect(psqi.hoursInBed('22:30', '06:00')).toEqual(7.5);
+  expect(psqi.hoursInBed('22:00', '06:30')).toEqual(8.5);
+  expect(psqi.hoursInBed('02:00', '05:00')).toEqual(3);
+  expect(psqi.hoursInBed('02:00', '02:00')).toEqual(24);
+  expect(psqi.hoursInBed('00:00', '02:00')).toEqual(2);
+  expect(psqi.hoursInBed('23:30', '02:00')).toEqual(2.5);
 });
 
 it ('c4scorer', () => {
-  expect(c4scorer((7-(+3)) / 8)).toEqual(3);
+  expect(psqi.c4scorer((7-(+3)) / 8)).toEqual(3);
 });
 
 const responseBest: IPSQIResponse = {

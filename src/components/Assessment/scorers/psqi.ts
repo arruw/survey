@@ -1,4 +1,3 @@
-
 export interface IPSQIResponse {
   q01: string
   q02: number
@@ -25,14 +24,14 @@ export interface IPSQIResponse {
 };
 
 export interface IPSQIScore {
-    c1: number
-    c2: number
-    c3: number
-    c4: number
-    c5: number
-    c6: number
-    c7: number
-    total: number
+  c1: number
+  c2: number
+  c3: number
+  c4: number
+  c5: number
+  c6: number
+  c7: number
+  total: number
 }
 
 const defaultResponse: IPSQIResponse = {
@@ -60,7 +59,7 @@ const defaultResponse: IPSQIResponse = {
   q09: 0,
 };
 
-export const calculateScore = (response: IPSQIResponse): IPSQIScore => {
+const calculateScore = (response: IPSQIResponse): IPSQIScore => {
   response.q05 = {...defaultResponse.q05, ...response.q05}
   response = {...defaultResponse, ...response};
 
@@ -100,7 +99,7 @@ export const calculateScore = (response: IPSQIResponse): IPSQIScore => {
   };
 };
 
-export const hoursInBed = (q01: string, q03: string): number => {
+const hoursInBed = (q01: string, q03: string): number => {
   const bedIn = q01.split(':').map(x => +x);
   const bedOut = q03.split(':').map(x => +x);
 
@@ -120,9 +119,15 @@ export const hoursInBed = (q01: string, q03: string): number => {
   return totlaHours;
 }
 
-export const c4scorer = (value: number) => {
+const c4scorer = (value: number) => {
   if (0.85 <= value)                  return 0;
   if (0.75 <= value && value < 0.85)  return 1;
   if (0.65 <= value && value < 0.75)  return 2;
   return 3;
 }
+
+export default {
+  calculateScore,
+  hoursInBed,
+  c4scorer,
+};
