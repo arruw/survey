@@ -88,7 +88,6 @@ const questions = {
           type: "matrix",
           name: "q05",
           title: "During the past month, how often have you had trouble sleeping because you...",
-          isRequired: true,
           isAllRowRequired: true,
           columns: [
             {
@@ -282,7 +281,6 @@ const questions = {
           name: "q11",
           visibleIf: "{q10} anyof [2, 3]",
           title: "Ask your partner/room mate how often in the past month you have\nhad...",
-          isRequired: true,
           columns: [
             {
               value: "0",

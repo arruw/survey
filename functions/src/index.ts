@@ -9,7 +9,7 @@ import * as flat from 'flat';
 admin.initializeApp();
 const db = admin.firestore();
 
-const bucket = 'development-269916-shared';
+const bucket = undefined;
 const schedule = functions.pubsub.schedule('*/5 * * * *').timeZone('Europe/Ljubljana');
 
 export const psqiCsvExporter = schedule.onRun(async (context) => {
@@ -97,9 +97,9 @@ const exportSurveyData = async (surveyId: string, fields: string[]) => {
   }
   console.log('New data to process: ' + newData.length);
 
-  const sharableFilePathRemote = `surveys/${surveyId}.csv`;
-  const newFilePathRemote = `surveys/${surveyId}-${now.seconds}.csv`;
-  const newFilePathRemoteChunk = `surveys/${surveyId}-${now.seconds}-chunk.csv`;
+  const sharableFilePathRemote = `surveys/${surveyId}.csv.gz`;
+  const newFilePathRemote = `surveys/${surveyId}-${now.seconds}.csv.gz`;
+  const newFilePathRemoteChunk = `surveys/${surveyId}-${now.seconds}-chunk.csv.gz`;
   const newFilePathLocal = path.join(os.tmpdir(), newFilePathRemote);
   
   // Ensure that local path exists
@@ -117,12 +117,17 @@ const exportSurveyData = async (surveyId: string, fields: string[]) => {
   console.log('Uploading new CSV chunk...');
   await admin.storage().bucket(bucket).upload(newFilePathLocal, {
     destination: newFilePathRemoteChunk,
-    gzip: true
+    gzip: true,
+    metadata: {
+      'Content-Type': 'text/csv',
+      'Content-Encoding': 'gzip',
+      'Cache-Control': 'public, max-age=60',
+    }
   });
   console.log('Appending CSV data...');
   const combineFiles: string[] = [];
   if (!initialRun) {
-    const prevFilePathRemote = `surveys/${surveyId}-${metadata?.lastRun.seconds}.csv`;
+    const prevFilePathRemote = `surveys/${surveyId}-${metadata?.lastRun.seconds}.csv.gz`;
     combineFiles.push(prevFilePathRemote);
   } 
   await admin.storage().bucket(bucket).combine([ ...combineFiles, newFilePathRemoteChunk ], newFilePathRemote);

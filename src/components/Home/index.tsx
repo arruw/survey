@@ -1,12 +1,13 @@
 import React from 'react';
 import { RouteComponentProps, Router } from "@reach/router"
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Alert } from 'reactstrap';
 import { useLocalStorage } from '@rehooks/local-storage';
 import QuestionerCard from '../Widgets/questionerCard';
 import { PSQIAbout, DASSAbout, LEAFQAbout } from '../Assessment';
 
 const Home = (props: RouteComponentProps) => {
   const [scores] = useLocalStorage<any>('scores', { psqi: null, dass: null, leafq: null });
+  const [showThankYou, setShowThankYou] = useLocalStorage<boolean>('showThankYou', false);
 
   return (
     <Container>
@@ -15,6 +16,12 @@ const Home = (props: RouteComponentProps) => {
           <h1>Self assessment questioners</h1>
         </Col>
       </Row>
+      { showThankYou &&
+      <Row>
+        <Col>
+          <Alert color="success" isOpen={showThankYou} toggle={() => setShowThankYou(false)}>Thank you for your time!</Alert>
+        </Col>
+      </Row> }
       <Row>
         <Col>
           <QuestionerCard

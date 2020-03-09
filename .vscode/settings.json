@@ -2,7 +2,8 @@
   "files.exclude": {
     "**/node_modules": true,
     "build/": true,
-    ".firebase/": true
+    ".firebase/": true,
+    "functions/lib/": true
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,

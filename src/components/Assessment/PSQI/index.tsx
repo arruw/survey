@@ -25,14 +25,13 @@ widgets.jquerybarrating(Survey, $);
 const PSQI = (props: RouteComponentProps) => {
   const firebase = useContext(FirebaseContext);
   const [scores, setScores] = useLocalStorage<any>('scores', { psqi: null, dass: null, leafq: null });
+  const [_, setShowThankYou] = useLocalStorage<boolean>('showThankYou', false);
 
   useEffect(() => {
-    if (scores.psqi && process.env.NODE_ENV === 'production') navigate('/');
+    if (scores.psqi && process.env.NODE_ENV === 'production') navigate('/assessment/psqi/about');
   });
 
   const onComplete = (survey: Survey.SurveyModel) => {
-    // survey.sendResult('22847fab-5387-43d8-98b7-0983d1bbee1b');
-    
     let response = castSurveyData(survey.data);
     response.scoring = calculateScore(survey.data);
   
@@ -43,11 +42,10 @@ const PSQI = (props: RouteComponentProps) => {
       .catch((error: Error) => console.log(error))
       .finally(() => {
         setScores({...scores, psqi: response?.scoring?.total ?? 0});
-        navigate('/');
+        setShowThankYou(true);
+        navigate('/assessment/psqi/about');
       });
   };
-
-  Survey.StylesManager.applyTheme("bootstrap");
 
   return (
     <Survey.Survey
