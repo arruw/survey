@@ -11,12 +11,16 @@ type GaugeProps = {
 const Gauge = (props: GaugeProps) => {
   return (
     <div className="gauge">
-      <div className="text-center">
+      {/* <div className="text-center">
         <h6>YOUR SCORE</h6>
-      </div>
+      </div> */}
       <div className="scale-annotations">
         <div className="annotation">
           BEST
+        </div>
+        <div className="score">
+          YOUR SCORE <br />
+          <Badge>{props.lastScore ?? '/'}</Badge>
         </div>
         <div className="annotation">
           WORST

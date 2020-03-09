@@ -8,7 +8,7 @@ const App = () => {
   return (
     <div>
       <Router>
-        <Home path="/" />
+        <Home path="/*" />
         <PSQI path="/assessment/psqi" />
         <DASS path="/assessment/dass" />
         <LEAFQ path="/assessment/leafq" />

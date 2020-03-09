@@ -1,11 +1,9 @@
 import React from 'react';
-import { RouteComponentProps, Link } from "@reach/router"
+import { RouteComponentProps, Router } from "@reach/router"
 import { Container, Row, Col } from 'reactstrap';
-import {
-  Card, CardText, CardBody, CardTitle, 
-} from 'reactstrap';
 import { useLocalStorage } from '@rehooks/local-storage';
-import Gauge from '../Widgets/gauge'
+import QuestionerCard from '../Widgets/questionerCard';
+import { PSQIAbout, DASSAbout, LEAFQAbout } from '../Assessment';
 
 const Home = (props: RouteComponentProps) => {
   const [scores] = useLocalStorage<any>('scores', { psqi: null, dass: null, leafq: null });
@@ -20,7 +18,8 @@ const Home = (props: RouteComponentProps) => {
       <Row>
         <Col>
           <QuestionerCard
-            linkTo="/assessment/psqi"
+            assessmentLink="/assessment/psqi"
+            aboutLink="/assessment/psqi/about"
             title="PSQI"
             text="Pittsburg Sleep Quality Index"
             maxScore={21}
@@ -28,7 +27,8 @@ const Home = (props: RouteComponentProps) => {
         </Col>
         <Col>
           <QuestionerCard
-            linkTo="/assessment/dass"
+            assessmentLink="/assessment/dass"
+            aboutLink="/assessment/dass/about"
             title="DASS"
             text="..."
             maxScore={21}
@@ -36,37 +36,25 @@ const Home = (props: RouteComponentProps) => {
         </Col>
         <Col>
           <QuestionerCard
-            linkTo="/assessment/leafq"
+            assessmentLink="/assessment/leafq"
+            aboutLink="/assessment/leafq/about"
             title="LEAF-Q"
             text="The low energy availability in females questionnaire (LEAF –Q), focuses on physiological symptoms of insufficient energy intake."
             maxScore={21}
             lastScore={scores.leafq} />
         </Col>
       </Row>
+      <Row>
+        <Col>
+          <Router>
+            <PSQIAbout path="/assessment/psqi/about" />
+            <DASSAbout path="/assessment/dass/about" />
+            <LEAFQAbout path="/assessment/leafq/about" />
+          </Router>
+        </Col>
+      </Row>
     </Container>
   );
 };
-
-type QuestionerCardProps = {
-  title: string
-  text: string
-  linkTo: string
-  lastScore: number | null
-  maxScore: number
-}
-
-const QuestionerCard = (props: QuestionerCardProps) => {
-  return (
-    <Card style={{height: '100%'}}>
-      <CardBody style={{height: '100%', display: 'flex', flexFlow: 'column nowrap'}}>
-        <CardTitle>{props.title}</CardTitle>
-        <CardText style={{flexGrow: 2}}>{props.text}</CardText>
-        <Gauge lastScore={props.lastScore} maxScore={props.maxScore} color={'info'}/>
-        { (!props.lastScore || process.env.NODE_ENV === 'development') && 
-          <Link to={props.linkTo} className="btn btn-primary">Get assessment</Link> }
-      </CardBody>
-    </Card>
-  );
-}
 
 export default Home;

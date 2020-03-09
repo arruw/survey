@@ -1,6 +1,7 @@
 import React from 'react';
+import { RouteComponentProps } from '@reach/router';
 
-const About = () => {
+const About = (props: RouteComponentProps) => {
   return (
     <div>TODO - About</div>
   );
