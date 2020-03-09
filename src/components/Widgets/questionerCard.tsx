@@ -18,16 +18,16 @@ const QuestionerCard = (props: QuestionerCardProps) => {
       <CardBody style={{height: '100%', display: 'flex', flexFlow: 'column nowrap'}}>
         <CardTitle>
           <div>{metadata.title}</div>
-          <div><Link to={`/about/${metadata.id}`}>?</Link></div>
+          <div><Link to={`/about/${metadata.id}`} className={'btn btn-outline-secondary btn-sm rounded-circle'}>?</Link></div>
         </CardTitle>
         <CardText style={{flexGrow: 2}}>{metadata.description}</CardText>
         { lastScore && 
            <Gauge lastScore={lastScore} maxScore={metadata.maxScore} color={'info'}/> }
         { (!lastScore || process.env.NODE_ENV === 'development') && 
-          <Link to={`/assessment/${metadata.id}`} className="btn btn-primary" onClick={() => {
-            // firebase.logEvent('started_assessment', {
-            //   surveyId: props.surveyId
-            // });
+          <Link to={`/assessment/${metadata.id}`} className={'btn btn-outline-primary ' + (!metadata.enabled ? 'disabled' : '')} onClick={() => {
+            firebase.logEvent('assessment_started', {
+              surveyId: metadata.id
+            });
           }}>Get assessment</Link> }
       </CardBody>
     </Card>

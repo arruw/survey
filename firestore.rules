@@ -10,10 +10,10 @@ service cloud.firestore {
           && surveyId in ['psqi', 'dass', 'leafq'];
 
         // TODO - remove this for production & limit logins from IP to 5/hour
-        allow update: if 
-          request.time == request.resource.data.timestamp
-          && request.auth.uid == userId
-          && surveyId in ['psqi', 'dass', 'leafq'];
+        // allow update: if 
+        //   request.time == request.resource.data.timestamp
+        //   && request.auth.uid == userId
+        //   && surveyId in ['psqi', 'dass', 'leafq'];
       }
     }
   }

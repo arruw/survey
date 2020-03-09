@@ -12,6 +12,7 @@ const metadataCollection: SurveyMetadataCollection = {
     maxScore: 21,
     questions: psqiQuestions,
     scorer: psqiScorer.calculateScore,
+    enabled: true,
   } as ISurveyMetadata,
   dass: {
     id: 'dass',
@@ -20,6 +21,7 @@ const metadataCollection: SurveyMetadataCollection = {
     minScore: 0,
     maxScore: 21,
     questions: dassQuestions,
+    enabled: false,
   } as ISurveyMetadata,
   leafq: {
     id: 'leafq',
@@ -27,7 +29,8 @@ const metadataCollection: SurveyMetadataCollection = {
     description: 'The low energy availability in females questionnaire (LEAF –Q), focuses on physiological symptoms of insufficient energy intake.',
     minScore: 0,
     maxScore: 21,
-    questions: leafqQuestions
+    questions: leafqQuestions,
+    enabled: false,
   } as ISurveyMetadata
 };
 
@@ -39,6 +42,7 @@ export interface ISurveyMetadata {
   maxScore: number,
   questions: any,
   scorer: Scorer,
+  enabled: boolean,
 }
 
 export enum SurveyId {

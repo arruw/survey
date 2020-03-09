@@ -34,11 +34,7 @@ const Assessment = (props: RouteComponentProps<IAssessmetProps>) => {
 
   const metadata = metadataCollection[props.surveyId];
 
-  console.log(props);
-
-  useEffect(() => {
-    if (scores[metadata.id] && process.env.NODE_ENV === 'production') navigate(`/about/${metadata.id}`);
-  });
+  if (!metadata.enabled || (scores[metadata.id] && process.env.NODE_ENV) === 'production') navigate(`/about/${metadata.id}`);
 
   const onComplete = (survey: Survey.SurveyModel) => {
     const response = {
@@ -54,9 +50,9 @@ const Assessment = (props: RouteComponentProps<IAssessmetProps>) => {
       .finally(() => {
         setScores({...scores, psqi: response?.scoring?.total ?? 0});
         setShowThankYou(true);
-        // firebase.logEvent('completed_assessment', {
-        //   surveyId: props.surveyId
-        // });
+        firebase.logEvent('assessment_completed', {
+          surveyId: props.surveyId
+        });
         navigate(`/about/${metadata.id}`);
       });
   };
