@@ -8,8 +8,8 @@ import * as flat from 'flat';
 
 admin.initializeApp();
 const db = admin.firestore();
+const bucket = admin.storage().bucket();
 
-const bucket = undefined;
 const schedule = functions.pubsub.schedule('0 * * * *').timeZone('Europe/Ljubljana');
 
 export const psqiCsvExporter = schedule.onRun(async (context) => {
@@ -115,9 +115,11 @@ const exportSurveyData = async (surveyId: string, fields: string[]) => {
   }
   console.log('New data to process: ' + newData.length);
 
-  const sharableFilePathRemote = `surveys/${surveyId}.csv`;
-  const newFilePathRemote = `surveys/${surveyId}-${now.seconds}.csv`;
-  const newFilePathRemoteChunk = `surveys/${surveyId}-${now.seconds}-chunk.csv`;
+  const gzip = true;
+  const fileExt = 'csv';
+  const sharableFilePathRemote = `surveys/${surveyId}.${fileExt}`;
+  const newFilePathRemote = `surveys/${surveyId}-${now.seconds}.${fileExt}`;
+  const newFilePathRemoteChunk = `surveys/${surveyId}-${now.seconds}-chunk.${fileExt}`;
   const newFilePathLocal = path.join(os.tmpdir(), newFilePathRemote);
   
   // Ensure that local path exists
@@ -133,32 +135,32 @@ const exportSurveyData = async (surveyId: string, fields: string[]) => {
 
   // Append new CSV data
   console.log('Uploading new CSV chunk...');
-  await admin.storage().bucket(bucket).upload(newFilePathLocal, {
+  await bucket.upload(newFilePathLocal, {
     destination: newFilePathRemoteChunk,
-    // gzip: true,
-    // metadata: {
-    //   'Content-Type': 'text/csv',
-    //   'Content-Encoding': 'gzip',
-    //   'Cache-Control': 'public, max-age=60',
-    // }
+    gzip: gzip,
   });
   console.log('Appending CSV data...');
   const combineFiles: string[] = [];
   if (!initialRun) {
-    const prevFilePathRemote = `surveys/${surveyId}-${metadata?.lastRun.seconds}.csv`;
+    const prevFilePathRemote = `surveys/${surveyId}-${metadata?.lastRun.seconds}.${fileExt}`;
     combineFiles.push(prevFilePathRemote);
   } 
-  await admin.storage().bucket(bucket).combine([ ...combineFiles, newFilePathRemoteChunk ], newFilePathRemote);
+  await bucket.combine([ ...combineFiles, newFilePathRemoteChunk ], newFilePathRemote);
   console.log('Cleanup...');
-  combineFiles.forEach(async file => await admin.storage().bucket(bucket).file(file).delete());
-  await admin.storage().bucket(bucket).file(newFilePathRemoteChunk).delete();
+  combineFiles.forEach(async file => await bucket.file(file).delete());
+  await bucket.file(newFilePathRemoteChunk).delete();
   
   // Create sharable CSV file
   console.log('Creating sharable CSV file...');
   if (!initialRun) {
-    await admin.storage().bucket(bucket).file(sharableFilePathRemote).delete();
+    await bucket.file(sharableFilePathRemote).delete();
   } 
-  await admin.storage().bucket(bucket).combine([ newFilePathRemote ], sharableFilePathRemote);
+  const [sharableFile] = await bucket.combine([ newFilePathRemote ], sharableFilePathRemote);
+  await sharableFile.setMetadata({
+    contentType: 'text/csv',
+    contentEncoding: gzip ? 'gzip' : null,
+    cacheControl: 'public, max-age=3600',
+  });
 
   // Update metadata
   console.log('Updating metadata...');

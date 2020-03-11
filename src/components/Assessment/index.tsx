@@ -51,7 +51,7 @@ const Assessment = (props: RouteComponentProps<IAssessmetProps>) => {
         setScores({...scores, psqi: response?.scoring?.total ?? 0});
         setShowThankYou(true);
         firebase.logEvent('assessment_completed', {
-          surveyId: props.surveyId
+          surveyId: metadata.id
         });
         navigate(`/about/${metadata.id}`);
       });
