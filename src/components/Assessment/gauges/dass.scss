@@ -1,0 +1,30 @@
+.dass-gauge {
+  padding: 5px;
+  text-align: center;
+  font-size: 12px;
+
+  .scores {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    .section {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid lightgray;
+      width: 33%;
+      border-radius: 5px;
+  
+      .label {
+        font-size: 8px;
+        flex-grow: 1;
+        text-transform: uppercase;
+      }
+  
+      .value {
+        font-size: 14;
+      }
+    }
+  }
+
+}

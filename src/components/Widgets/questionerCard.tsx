@@ -1,17 +1,16 @@
 import React, { useContext } from 'react';
 import { Card, CardBody, CardTitle, CardText } from 'reactstrap';
 import { Link } from '@reach/router';
-import { Gauge } from '.';
 import './questionerCard.scss';
 import { FirebaseContext } from '../Firebase';
-import metadataCollection, { SurveyId } from '../Assessment/metadata';
+import metadataCollection, { SurveyId, SurveyScoreCollection } from '../Assessment/metadata';
 import useLocalStorage from '@rehooks/local-storage';
 
 const QuestionerCard = (props: QuestionerCardProps) => {
-  const [scores] = useLocalStorage<any>('scores', { psqi: null, dass: null, leafq: null });
+  const [scores] = useLocalStorage<SurveyScoreCollection>('scores', { psqi: null, dass: null, leafq: null });
   const firebase = useContext(FirebaseContext);
   const metadata = metadataCollection[props.surveyId];
-  const lastScore = scores[metadata.id];
+  const lastScore = scores ? scores[metadata.id] : null;
 
   return (
     <Card style={{height: '100%'}}>
@@ -22,7 +21,7 @@ const QuestionerCard = (props: QuestionerCardProps) => {
         </CardTitle>
         <CardText style={{flexGrow: 2}}>{metadata.description}</CardText>
         { lastScore && 
-           <Gauge lastScore={lastScore} maxScore={metadata.maxScore} color={'info'}/> }
+          metadata.gaugeComponent(lastScore) }
         { (!lastScore || process.env.NODE_ENV === 'development') && 
           <Link to={`/assessment/${metadata.id}`} className={'btn btn-outline-primary ' + (!metadata.enabled ? 'disabled' : '')} onClick={() => {
             firebase.logEvent('assessment_started', {

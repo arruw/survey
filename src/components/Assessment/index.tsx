@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import metadataCollection, { SurveyId } from './metadata';
+import metadataCollection, { SurveyId, SurveyScoreCollection } from './metadata';
 import * as Survey from 'survey-react';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { RouteComponentProps, navigate } from "@reach/router"
@@ -29,12 +29,12 @@ const Assessment = (props: RouteComponentProps<IAssessmetProps>) => {
   if (!props.surveyId) throw new Error('SurveyId not set.');
 
   const firebase = useContext(FirebaseContext);
-  const [scores, setScores] = useLocalStorage<any>('scores', { psqi: null, dass: null, leafq: null });
+  const [scores, setScores] = useLocalStorage<SurveyScoreCollection>('scores', { psqi: null, dass: null, leafq: null });
   const [_, setShowThankYou] = useLocalStorage<boolean>('showThankYou', false);
 
   const metadata = metadataCollection[props.surveyId];
 
-  if (!metadata.enabled || (scores[metadata.id] && process.env.NODE_ENV) === 'production') navigate(`/about/${metadata.id}`);
+  if (!metadata.enabled || (scores && scores[metadata.id] && process.env.NODE_ENV) === 'production') navigate(`/about/${metadata.id}`);
 
   const onComplete = (survey: Survey.SurveyModel) => {
     const response = {
@@ -48,7 +48,9 @@ const Assessment = (props: RouteComponentProps<IAssessmetProps>) => {
       .then(() => console.log(`Saved assessment ${metadata.id}.`))
       .catch((error: Error) => console.log(error))
       .finally(() => {
-        setScores({...scores, psqi: response?.scoring?.total ?? 0});
+        let newScores = scores as SurveyScoreCollection;
+        newScores[metadata.id] = response?.scoring
+        setScores(newScores);
         setShowThankYou(true);
         firebase.logEvent('assessment_completed', {
           surveyId: metadata.id

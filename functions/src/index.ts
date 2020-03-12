@@ -46,37 +46,37 @@ export const psqiCsvExporter = schedule.onRun(async (context) => {
   return null;
 });
 
-// export const dassCsvExporter = schedule.onRun(async (context) => {
-//   await exportSurveyData('psqi', [
-//     'timestamp._seconds',
-//     'scoring.c1',
-//     'scoring.c2', 
-//     'scoring.c3',
-//     'scoring.c4',
-//     'scoring.c5',
-//     'scoring.c6',
-//     'scoring.c7',
-//     'scoring.total',
-//   ]);
+export const dassCsvExporter = schedule.onRun(async (context) => {
+  await exportSurveyData('dass', [
+    'timestamp._seconds',
+    'q01.s01',
+    'q01.a02',
+    'q01.d03',
+    'q01.a04',
+    'q01.d05',
+    'q01.s06',
+    'q01.a07',
+    'q01.s08',
+    'q01.a09',
+    'q01.d10',
+    'q01.s11',
+    'q01.s12',
+    'q01.d13',
+    'q01.s14',
+    'q01.a15',
+    'q01.d16',
+    'q01.d17',
+    'q01.s18',
+    'q01.a19',
+    'q01.a20',
+    'q01.d21',
+    'scoring.depression',
+    'scoring.anxiety', 
+    'scoring.stress',
+  ]);
 
-//   return null;
-// });
-
-// export const leafqCsvExporter = schedule.onRun(async (context) => {
-//   await exportSurveyData('psqi', [
-//     'timestamp._seconds',
-//     'scoring.c1',
-//     'scoring.c2', 
-//     'scoring.c3',
-//     'scoring.c4',
-//     'scoring.c5',
-//     'scoring.c6',
-//     'scoring.c7',
-//     'scoring.total',
-//   ]);
-
-//   return null;
-// });
+  return null;
+});
 
 const exportSurveyData = async (surveyId: string, fields: string[]) => {
   const now  = admin.firestore.Timestamp.now();

@@ -1,23 +1,21 @@
 import React from 'react';
 import { Progress, Badge } from 'reactstrap';
-import './gauge.scss';
+import './psqi.scss';
 
 type GaugeProps = {
-  lastScore: number | null
-  maxScore: number
-  color: string
-};
+  total: number
+} | null;
 
 const Gauge = (props: GaugeProps) => {
   return (
-    <div className="gauge">
+    <div className="pass-gauge">
       <div className="scale-annotations">
         <div className="annotation">
           BEST
         </div>
         <div className="score">
-          YOUR SCORE <br />
-          <Badge>{props.lastScore ?? '/'}</Badge>
+          YOUR SCORE<br />
+          <Badge>{props?.total ?? '/'}</Badge>
         </div>
         <div className="annotation">
           WORST
@@ -25,8 +23,8 @@ const Gauge = (props: GaugeProps) => {
       </div>
       <div className="scale">
         <div className="value">0</div>
-        <Progress max={props.maxScore} value={props.lastScore ?? 0} color={props.color} />
-        <div className="value">{props.maxScore}</div>
+        <Progress max={21} value={props?.total ?? 0} />
+        <div className="value">21</div>
       </div>
     </div>
   );
